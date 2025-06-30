@@ -11,12 +11,12 @@
     <meta name="apple-mobile-web-app-title" content="PWA">
     
     <!-- Manifest -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="./manifest.json">
     
     <!-- Icons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32x32.png">
+    <!-- <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16x16.png">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png"> -->
     
     <title>My PWA App</title>
     
@@ -113,7 +113,7 @@
       // Service Worker Registration
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
+          navigator.serviceWorker.register('./sw.js')
             .then(registration => {
               console.log('SW registered: ', registration);
             })
