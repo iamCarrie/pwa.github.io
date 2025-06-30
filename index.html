@@ -1,30 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
     <!-- PWA Meta Tags -->
-     <!-- 
+    <!-- 
       - 啟用全螢幕模式：當設定為 "yes" 時，它告訴手機瀏覽器您的網頁應用程式可以在全螢幕模式下運行，不顯示瀏覽器的網址列和導航控制項
       - 提供原生應用程式體驗：讓您的網頁應用程式表現得更像一個原生的手機應用程式
       - 支援 iOS Safari：這對 iOS 裝置特別重要，它允許網頁應用程式以獨立模式啟動（不顯示 Safari 的使用者介面元素）
      -->
-    <meta name="theme-color" content="#667eea">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-title" content="PWA">
-    
+    <meta name="theme-color" content="#667eea" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-title" content="PWA" />
+
     <!-- Manifest -->
-    <link rel="manifest" href="/pwa.github.io/manifest.json">
+    <link rel="manifest" href="/pwa.github.io/manifest.json" />
 
     <!-- Icons -->
-    <link rel="icon" type="image/png" sizes="192x192" href="/pwa.github.io/icons/icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/pwa.github.io/icons/icon-512x512.png">
-    <link rel="apple-touch-icon" href="/pwa.github.io/icons/icon-192x192.png">
-    
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="/pwa.github.io/icons/icon-192x192.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="512x512"
+      href="/pwa.github.io/icons/icon-512x512.png"
+    />
+    <link rel="apple-touch-icon" href="/pwa.github.io/icons/icon-192x192.png" />
+
     <title>My PWA App</title>
-    
+
     <style>
       body {
         margin: 0;
@@ -36,27 +49,27 @@
         align-items: center;
         justify-content: center;
       }
-      
+
       .container {
         background: white;
         padding: 40px;
         border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         text-align: center;
         max-width: 500px;
       }
-      
+
       h1 {
         color: #333;
         margin-bottom: 20px;
       }
-      
+
       p {
         color: #666;
         line-height: 1.6;
         margin-bottom: 20px;
       }
-      
+
       .install-btn {
         background: #667eea;
         color: white;
@@ -68,24 +81,24 @@
         transition: all 0.3s ease;
         display: none;
       }
-      
+
       .install-btn:hover {
         background: #5a6fd8;
         transform: translateY(-2px);
       }
-      
+
       .status {
         margin-top: 20px;
         padding: 10px;
         border-radius: 10px;
         font-weight: bold;
       }
-      
+
       .online {
         background: #d4edda;
         color: #155724;
       }
-      
+
       .offline {
         background: #f8d7da;
         color: #721c24;
@@ -95,17 +108,20 @@
   <body>
     <div class="container">
       <h1>🚀 My PWA App</h1>
-      <p>This is a Progressive Web App that can be installed on your device and works offline!</p>
-      
+      <p>
+        This is a Progressive Web App that can be installed on your device and
+        works offline!
+      </p>
+
       <button id="installBtn" class="install-btn">Install App</button>
-      
+
       <div id="status" class="status">
         <span id="statusText">Checking connection...</span>
       </div>
-      
-      <div style="margin-top: 30px;">
+
+      <div style="margin-top: 30px">
         <h3>PWA Features:</h3>
-        <ul style="text-align: left; color: #666;">
+        <ul style="text-align: left; color: #666">
           <li>✅ Installable on devices</li>
           <li>✅ Works offline</li>
           <li>✅ App-like experience</li>
@@ -115,62 +131,77 @@
     </div>
 
     <script>
-      // Service Worker Registration
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js')
-            .then(registration => {
-              console.log('SW registered: ', registration);
+      // Service Worker Registration - 離線工作
+      // 檢查瀏覽器是否支援 Service Worker，如果支援則註冊 Service Worker, 只有支援的瀏覽器才會執行後續程式碼
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          // 註冊 Service Worker, 這個檔案會處理快取、離線功能等
+          navigator.serviceWorker
+            .register("./sw.js")
+            .then((registration) => {
+              // 成功!!!
+              console.log("SW registered: ", registration);
             })
-            .catch(registrationError => {
-              console.log('SW registration failed: ', registrationError);
+            .catch((registrationError) => {
+              // 失敗!!!
+              console.log("SW registration failed: ", registrationError);
             });
         });
       }
 
       // Install Prompt
       let deferredPrompt;
-      const installBtn = document.getElementById('installBtn');
+      const installBtn = document.getElementById("installBtn");
 
       // 事件觸發：當瀏覽器檢測到您的 PWA 符合安裝條件時，會觸發 beforeinstallprompt 事件
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
+      //  觸發條件：
+      //  1.有有效的 manifest.json 檔案
+      //  2.有 Service Worker 註冊
+      //  3.使用 HTTPS 或 localhost
+      //  4.使用者尚未安裝過此 PWA
+      //  5.符合瀏覽器的安裝標準
+
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault(); // 阻止瀏覽器自動彈出安裝提示
         deferredPrompt = e;
-        console.log('beforeinstallprompt', deferredPrompt);
-        installBtn.style.display = 'block';
+        console.log("beforeinstallprompt", deferredPrompt);
+        installBtn.style.display = "block";
       });
 
-      installBtn.addEventListener('click', () => {
+      installBtn.addEventListener("click", () => {
         if (deferredPrompt) {
-          deferredPrompt.prompt();
+          // 手動顯示瀏覽器的「安裝應用程式」對話框
+          // 這是之前被 e.preventDefault() 阻止的預設行為
+          deferredPrompt.prompt(); // ← 這裡！手動顯示安裝對話框
           deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-              console.log('User accepted the install prompt');
-            } else {
-              console.log('User dismissed the install prompt');
-            }
+            // 對話框選擇結果
+            // if (choiceResult.outcome === "accepted") {
+            //   console.log("User accepted the install prompt");
+            // } else {
+            //   console.log("User dismissed the install prompt");
+            // }
             deferredPrompt = null;
-            installBtn.style.display = 'none';
+            installBtn.style.display = "none";
           });
         }
       });
 
       // Online/Offline Status
-      const statusText = document.getElementById('statusText');
-      const statusDiv = document.getElementById('status');
+      const statusText = document.getElementById("statusText");
+      const statusDiv = document.getElementById("status");
 
       function updateStatus() {
         if (navigator.onLine) {
-          statusText.textContent = '🟢 Online';
-          statusDiv.className = 'status online';
+          statusText.textContent = "🟢 Online";
+          statusDiv.className = "status online";
         } else {
-          statusText.textContent = '🔴 Offline - App still works!';
-          statusDiv.className = 'status offline';
+          statusText.textContent = "🔴 Offline - App still works!";
+          statusDiv.className = "status offline";
         }
       }
 
-      window.addEventListener('online', updateStatus);
-      window.addEventListener('offline', updateStatus);
+      window.addEventListener("online", updateStatus);
+      window.addEventListener("offline", updateStatus);
       updateStatus();
     </script>
   </body>
