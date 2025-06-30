@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PWA">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16x16.png">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
+    <title>My PWA App</title>
+    
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .container {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        text-align: center;
+        max-width: 500px;
+      }
+      
+      h1 {
+        color: #333;
+        margin-bottom: 20px;
+      }
+      
+      p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+      
+      .install-btn {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 25px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: none;
+      }
+      
+      .install-btn:hover {
+        background: #5a6fd8;
+        transform: translateY(-2px);
+      }
+      
+      .status {
+        margin-top: 20px;
+        padding: 10px;
+        border-radius: 10px;
+        font-weight: bold;
+      }
+      
+      .online {
+        background: #d4edda;
+        color: #155724;
+      }
+      
+      .offline {
+        background: #f8d7da;
+        color: #721c24;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🚀 My PWA App</h1>
+      <p>This is a Progressive Web App that can be installed on your device and works offline!</p>
+      
+      <button id="installBtn" class="install-btn">Install App</button>
+      
+      <div id="status" class="status">
+        <span id="statusText">Checking connection...</span>
+      </div>
+      
+      <div style="margin-top: 30px;">
+        <h3>PWA Features:</h3>
+        <ul style="text-align: left; color: #666;">
+          <li>✅ Installable on devices</li>
+          <li>✅ Works offline</li>
+          <li>✅ App-like experience</li>
+          <li>✅ Fast loading</li>
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      // Service Worker Registration
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+              console.log('SW registered: ', registration);
+            })
+            .catch(registrationError => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+
+      // Install Prompt
+      let deferredPrompt;
+      const installBtn = document.getElementById('installBtn');
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.style.display = 'block';
+      });
+
+      installBtn.addEventListener('click', () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted the install prompt');
+            } else {
+              console.log('User dismissed the install prompt');
+            }
+            deferredPrompt = null;
+            installBtn.style.display = 'none';
+          });
+        }
+      });
+
+      // Online/Offline Status
+      const statusText = document.getElementById('statusText');
+      const statusDiv = document.getElementById('status');
+
+      function updateStatus() {
+        if (navigator.onLine) {
+          statusText.textContent = '🟢 Online';
+          statusDiv.className = 'status online';
+        } else {
+          statusText.textContent = '🔴 Offline - App still works!';
+          statusDiv.className = 'status offline';
+        }
+      }
+
+      window.addEventListener('online', updateStatus);
+      window.addEventListener('offline', updateStatus);
+      updateStatus();
+    </script>
+  </body>
+</html>
