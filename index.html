@@ -132,10 +132,11 @@
       let deferredPrompt;
       const installBtn = document.getElementById('installBtn');
 
+      // 事件觸發：當瀏覽器檢測到您的 PWA 符合安裝條件時，會觸發 beforeinstallprompt 事件
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        installBtn.style.display = 'block';
+        // installBtn.style.display = 'block';
       });
 
       installBtn.addEventListener('click', () => {
