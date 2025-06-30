@@ -136,7 +136,8 @@
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        // installBtn.style.display = 'block';
+        console.log('beforeinstallprompt', deferredPrompt);
+        installBtn.style.display = 'block';
       });
 
       installBtn.addEventListener('click', () => {
